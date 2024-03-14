@@ -74,6 +74,13 @@
                         <li class="nav-item">
                             <a class="nav-link px-3" href="{% url 'contact' %}">Contact</a>
                         </li>
+
+                        {% if request.session.email %}
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="{% url "mybookings" %}">MyBookings</a>
+                        </li>
+                        {% endif %}
+
                         <li class="nav-item dropdown text-center">
                             <a class="nav-link px-3 dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                                 aria-expanded="false" href="#">Pages <iconify-icon

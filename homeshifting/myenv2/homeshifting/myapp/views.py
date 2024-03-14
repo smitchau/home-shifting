@@ -1,7 +1,17 @@
-from django.shortcuts import render ,redirect
+from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
 from .models import *
 from django.contrib import messages
-
+from django.contrib.auth import authenticate,login,logout
+from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.http import JsonResponse
+import random
+import requests
+from django.conf import settings
+from django.urls import reverse
+import razorpay
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 # Create your views here.
 def signup(request):
@@ -90,9 +100,29 @@ def changepassword(request):
     else:
         return render(request, 'myapp/index.html')
 
-def home(request):
-    return render(request,'myapp/index.html')
 
+def home(request):
+    if request.POST:
+        user = User.objects.get(u_email = request.session['email'])
+        #booking = Booking.objects.filter(userid = user).latest('razorpay_order_id')
+        book = Booking.objects.filter(userid = user)
+        #booking = [order.razorpay_order_id for order in book]
+
+        for booking in book:
+            print("======================",booking.razorpay_order_id)
+            if booking.razorpay_order_id == request.POST['order_id']:
+                print("hello")
+                booking = get_object_or_404(Booking, pk=booking.pk)
+                print(booking)
+                context = {'booking': booking}
+                return render(request, "myapp/utrack.html",context)
+
+    else:
+        return render(request,'myapp/index.html')
+
+#def home(request):
+#    return render(request,'myapp/index.html')   
+ 
 def vehical(request):
     return render(request,'myapp/vehical.html')    
  
@@ -105,29 +135,121 @@ def about(request):
 def booking(request):
     if 'email' in request.session:
         if request.POST:
-            u_id = User.objects.get(u_email = request.session['email'])
-            
+            userid = User.objects.get(u_email=request.session['email'])
+            price = int(request.POST.get('price'))
             book = Booking.objects.create(
-                u_id = u_id,
-                bname = request.POST['name'],
-                housetype = request.POST['housetype'],
-                source = request.POST['movingfrom'],
-                destination = request.POST['movingto'],
-                state = request.POST['state'],
-                pcode = request.POST['pincode']
+                htype=request.POST['htype'],
+                userid=userid,
+                bname=request.POST['name'],
+                movefrom=request.POST['moving_from'],
+                moveto=request.POST['moving_to'],
+                state=request.POST['state'],
+                zipcode=request.POST['zipcode'],
+                price=price
             )
-            msg = 'Your Booking has been placed successfully.'
-            messages.success(request,msg)
-            return render(request,'myapp/booking.html') 
+            
+            print(type(book.price))
+            print("=================================")
+    
+            client = razorpay.Client(auth = (settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+            payment = client.order.create({'amount': book.price * 100, 'currency': 'INR', 'payment_capture': 1})
+            book.razorpay_order_id = payment['id']  
+            book.save()
+
+            request.session['name']= book.bname
+            print(request.session['name'])
+
+            context = {
+                    'payment': payment,
+                    'book':book,  # Ensure the amount is in paise
+                }
+            
+            print("=======================",context)
+            print("&7777777777777777777777",payment)
+
+
+            
+            return render(request, 'myapp/payments.html',context)
         else:
-            return render(request,'myapp/booking.html')
+            return render(request, "myapp/booking.html")
     else:
-        msg= "Please Login to Continue"
+        messages.info(request, "Please login now.........")
+        return render(request, "myapp/booking.html")
+    
+def payments(request):
+    return render(request,"myapp/payments.html")
+
+def mymail(subject, template, to, context,order_id):
+    subject = subject
+    template_str = 'myapp/' + template +'.html'
+    context['order_id'] = order_id
+    html_message = render_to_string(template_str, context)
+    plain_message = strip_tags(html_message)
+    from_email = 'smitchauhan2712@gmail.com'
+    send_mail(
+        subject,
+        plain_message,
+        from_email,
+        [to],
+        html_message=html_message,
+        fail_silently=False,
+    )
+    
+def success(request):
+   u_email = request.session.get('email')
+
+   if u_email:
+        user = get_object_or_404(User, u_email=u_email)
+        booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+
+        razorpay_payment_id = request.GET.get('razorpay_payment_id')
+
+        if razorpay_payment_id:
+            # Update the booking instance with the Razorpay payment ID
+            booking.razorpay_payment_id = razorpay_payment_id
+            booking.save()
+
+            subject = 'booking successfully'
+            template = "etemplate"
+            to = user.u_email
+            context = {'user':user.u_name}
+            order_id = booking.razorpay_order_id
+            mymail(subject, template, to, context,order_id)
+            print('======================send otp successfully')
+
+        return render(request,'myapp/success.html')
+   else:
+        msg= "Please login....."
         messages.info(request,msg)
-        return render(request, 'myapp/booking.html')
+        return render(request,"myapp/index.html")
+
  
 def contact(request):
     return render(request,'myapp/contact.html')
+
+def mybookings(request):
+    user = User.objects.get(u_email = request.session['email'])
+    user_bookings = Booking.objects.filter(userid=user)
+    return render(request,"myapp/mybookings.html",{'user_bookings': user_bookings})
+
+
+def utrack(request, pk):
+    booking = get_object_or_404(Booking, pk=pk)
+    context = {'booking': booking}
+    print(context)
+    return render(request, "myapp/utrack.html", context)
+
+def cancle(request,pk):
+    booking = Booking.objects.get(pk=pk)
+
+    # Check if the booking is not already canceled
+    if booking.status != 'cancel':
+        # Set the status to 'cancel'
+        booking.status = 'cancel'
+        booking.save()
+
+    # Redirect back to the user's bookings page
+    return redirect('mybookings')
 
 
 

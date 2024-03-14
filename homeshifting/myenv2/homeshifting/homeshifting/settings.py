@@ -127,3 +127,23 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# razorypay settings.py
+RAZORPAY_KEY_ID = 'rzp_test_3iCOPLbchUyIwQ'
+RAZORPAY_KEY_SECRET = '162cebPFC0tUFlWw99PsxZp1'
+
+# To Enable Popus in Django or else it will block the payment popup
+
+# Using SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups",
+# you will solve the issue  about:blank#blocked which occassionaly occurs in django pop ups
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'smitchauhan2712@gmail.com'
+EMAIL_HOST_PASSWORD = 'nmia gffw ybld dukj'

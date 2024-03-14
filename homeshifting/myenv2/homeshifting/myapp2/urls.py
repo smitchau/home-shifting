@@ -28,4 +28,6 @@ urlpatterns = [
     path('profile/',views.profile,name='profile'), 
     path('update/',views.update,name='update'), 
     path('Withdrawal_funds/',views.Withdrawal_funds,name='Withdrawal_funds'), 
+    path('packages/',views.packages,name='packages'), 
+    path('pdetail/',views.pdetail,name='pdetail'), 
 ]

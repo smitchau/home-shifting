@@ -144,6 +144,27 @@
         }
     </Script>
 
+     
+    <script>
+        //==========================automatic price changing =================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var houseTypeSelect = document.getElementById('houseType');
+            var priceInput = document.getElementById('price');
+        
+            houseTypeSelect.addEventListener('change', function () {
+                var selectedOption = houseTypeSelect.options[houseTypeSelect.selectedIndex];
+                var price = selectedOption.getAttribute('data-price');
+        
+                // Log the price value for debugging
+                console.log("Selected Price:", price);
+        
+                // Update the price input field
+                priceInput.value = price;
+            });
+        });
+    
+    </script>
+
 </body>
 
 </html>

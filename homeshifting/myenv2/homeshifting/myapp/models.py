@@ -12,31 +12,52 @@ class User(models.Model):
 		return self.u_email + " | " + self.u_contact
 
 class Booking(models.Model):
-	u_id = models.ForeignKey(User , on_delete = models.CASCADE)
-	bname = models.CharField(max_length = 30)
-	housetype = models.CharField(max_length = 30)
-	Booking_at = models.DateTimeField(auto_now = True)
-	source = models.CharField(max_length = 30)
-	destination = models.CharField(max_length = 30)
-	state = models.CharField(max_length = 30)
-	pcode = models.IntegerField()
+    ORDERSTATUS = (
+    	("house-type","house-type"),
+        ("Booking","Booking"),
+        ("payment-status","payment-status"),
+        ("on-the-way","on-the-way"),
+        ("cancel","Cancle"),
+        ("finish","finish process"))
+    htype = models.CharField(max_length=40,null=True)
+    userid = models.ForeignKey(User,on_delete=models.CASCADE)
+    bname = models.CharField(max_length=40)
+    movefrom = models.CharField(max_length=40)
+    moveto = models.CharField(max_length=40)
+    state = models.CharField(max_length=40)
+    zipcode = models.PositiveIntegerField()
+    price = models.PositiveIntegerField()
+    razorpay_order_id=models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_id=models.CharField(max_length=100,null=True,blank=True)
+    status = models.CharField(max_length=20,choices = ORDERSTATUS,default="Booking")
 
-	def __str__(self):
-		return self.bname + " | " + self.u_id.u_contact
 
 
-class Truckpartner(models.Model):
-	b_id = models.ForeignKey(Booking , on_delete = models.CASCADE)
-	t_name = models.CharField(max_length = 30)
-	t_email = models.EmailField(unique=True , max_length = 30)
-	t_password = models.CharField(max_length = 20)
-	t_contact = models.CharField(max_length = 11)
-	t_address = models.CharField(max_length = 50)
-	t_aadharcard_details = models.CharField(max_length = 30 , unique = True)
-	t_pancard_details = models.CharField(max_length = 30 , unique = True)
-	t_drivinglicence_details = models.CharField(max_length = 30 , unique = True)
-	t_bank_details = models.CharField(max_length = 30 , unique = True)
-	
+    house_type_active = models.BooleanField(default=False)
+    booking_active = models.BooleanField(default=False)
+    payment_status_active = models.BooleanField(default=False)
+    on_the_way_active = models.BooleanField(default=False)
+    cancel_active = models.BooleanField(default=False)
+    finish_active = models.BooleanField(default=False)
+
+    def get_all_processes(self):
+        return [status[0] for status in self.ORDERSTATUS]
+
+    def save(self, *args, **kwargs):
+        # Set flags based on the current status
+        current_status = self.status
+        self.house_type_active = current_status == 'house-type'
+        self.booking_active = current_status == 'Booking'
+        self.payment_status_active = current_status == 'payment-status'
+        self.on_the_way_active = current_status == 'on-the-way'
+        self.cancel_active = current_status == 'cancel'
+        self.finish_active = current_status == 'finish'
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return  self.bname + " || " + self.htype   
+
 """
 class fleet(models.Model):
 	t_id = models.ForeignKey(Truckpartner , on_delete = models.CASCADE)

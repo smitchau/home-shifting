@@ -2,11 +2,14 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import *
 from django.contrib import messages
-
+from django.conf import settings
+import razorpay
 # Create your views here.
 def home(request):
-    return render(request,'home.html')
-
+    if request.session:
+        return render(request,'home.html')
+    else:
+        return redirect('tlogin')
 
 def signup(request):
     if request.POST:
@@ -40,6 +43,36 @@ def signup(request):
                     return redirect('tsignup')
     else:
         return render(request,"tsignup.html")
+    
+def packages(request):
+        if request.POST:
+        #truck =Truckpartner.objects.get(t_email = request.POST['email'])
+        #print('===============================',truck)
+            price = int(request.POST.get('price'))
+            package = Package.objects.create(
+                package_name = request.POST['htype'],
+                price = price
+            )
+            print('====================',package)
+                
+            client = razorpay.Client(auth = (settings.RAZORPAY_KEY_ID,settings.RAZORPAY_KEY_SECRET))
+            payment = client.order.create({'amount': package.price * 100, 'currency': 'INR', 'payment_capture': 1})
+            package.razorpay_order_id = payment['id']  
+            package.save()
+
+            context = {
+                    'payment': payment,
+                    'package':package,  # Ensure the amount is in paise
+                }
+            print(context)
+            return render(request,'pdetail.html',context)
+           
+        else:
+            return render(request,"packages.html")
+    
+def pdetail(request):
+    return render(request,'pdetail.html') 
+
 
 def contact(request):
     return render(request,'contact.html')

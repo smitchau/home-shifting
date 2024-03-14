@@ -20,13 +20,14 @@
     <!-- search section start  -->
     <section id="search">
         <div class="container search-block p-5">
-            <form class="row">
+            <form class="row" action="{% url 'home'%}" method="post">
+                {% csrf_token %}
                
                 <div class="col-12 col-md-6 col-lg-10 mt-4 mt-lg-0">
                     <label for="location" class="label-style text-capitalize form-label">Track your Goods</label>
                     <div class="input-group date">
                         <input type="text" class="form-control p-3 position-relative" id="location"
-                            placeholder="Enter your Tracking Number" />
+                            placeholder="Enter your Tracking Number" / name="order_id">
                         <span class="search-icon-position position-absolute p-3 ">
                             <iconify-icon class="search-icons" icon="solar:map-arrow-square-outline"></iconify-icon>
                         </span>
@@ -38,7 +39,7 @@
                 <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
                     <label for="location" class="label-style text-capitalize form-label" ></label>
                     <div class="d-flex justify-content-between">
-                        <a href="#" class="btn btn-primary">Track now </a>
+                        <button class="btn btn-primary">Track now </button>
                     </div>
                 </div>
               
@@ -53,8 +54,7 @@
 
     </section>
 
-    <!-- process section start  -->
-    <section id="process">
+    <!-- process section start  <section id="process">
         <div class=" process-content container">
             <h2 class=" text-center my-5 pb-5">Our Shifting <span class="text-primary"> process </span> </h2>
             <hr class="progress-line">
@@ -86,10 +86,11 @@
 
 
         </div>
-    </section>
+    </section>-->
+    
 
     <!-- rental section start  -->
-    <section id="rental" class="position-relative" style="height: 600px;">
+    <section id="rental" class="position-relative" style="height: 600px; margin-top: 15rem;">
         <div class="container my-5 py-5">
             <h2 class=" text-center my-5">Types of <span class="text-primary"> Vehical </span> </h2>
 

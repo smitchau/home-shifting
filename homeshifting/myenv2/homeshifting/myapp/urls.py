@@ -28,5 +28,10 @@ urlpatterns = [
     path('about/',views.about,name='about'),
     path('booking/',views.booking,name='booking'),
     path('contact/',views.contact,name='contact'),
+    path('payments/',views.payments,name='payments'),
+    path('success/',views.success,name='success'),
+    path('mybookings/',views.mybookings, name='mybookings'),
+    path('utrack/ <int:pk>/',views.utrack, name="utrack"),
+    path('cancle/ <int:pk>/',views.cancle, name="cancle"),
     
 ]

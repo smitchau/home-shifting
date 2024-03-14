@@ -1,9 +1,11 @@
 from django.db import models
 from myapp.models import *
+from django.utils import timezone
+from datetime  import timedelta
 # Create your models here.
 
 class Truckpartner(models.Model):
-	#user = models.ForeignKey(User,on_delete =models.CASCADE)
+	user = models.ForeignKey(User,on_delete =models.CASCADE , null =True)
 	t_name = models.CharField(max_length = 30)
 	t_email = models.EmailField(unique=True , max_length = 30)
 	t_password = models.CharField(max_length = 20)
@@ -17,3 +19,16 @@ class Truckpartner(models.Model):
 	    return self.t_name + " || " + self.t_contact
 	
         
+class Package(models.Model):
+   
+    package_name = models.CharField(max_length=20)
+    price = models.PositiveIntegerField()
+    razorpay_order_id=models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_id=models.CharField(max_length=100,null=True,blank=True)
+    truck = models.ForeignKey(Truckpartner, on_delete=models.CASCADE ,null = True)
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField(null = True)
+
+   
+    def str(self):
+	    return self.package_name + " | |" + self.start_date
