@@ -5,7 +5,6 @@ from datetime  import timedelta
 # Create your models here.
 
 class Truckpartner(models.Model):
-	user = models.ForeignKey(User,on_delete =models.CASCADE , null =True)
 	t_name = models.CharField(max_length = 30)
 	t_email = models.EmailField(unique=True , max_length = 30)
 	t_password = models.CharField(max_length = 20)
@@ -15,20 +14,18 @@ class Truckpartner(models.Model):
 	t_pancard_details = models.CharField(max_length = 30 , unique = True)
 	t_drivinglicence_details = models.CharField(max_length = 30 , unique = True)
 	t_picture = models.ImageField(upload_to="images/" ,default="images/pic-1.jpg")
+	status = models.BooleanField(default = False)
+	on_work = models.BooleanField(default = False)
+	#=============================================================================
+
+	package_type = models.CharField(max_length=20,null=True)
+	price = models.PositiveIntegerField(null=True)
+	razorpay_order_id=models.CharField(max_length=100,null=True,blank=True)
+	razorpay_payment_id=models.CharField(max_length=100,null=True,blank=True)
+	start_date = models.DateTimeField(default=timezone.now)
+	end_date = models.DateTimeField(null = True)
+	truck_type = models.CharField(max_length=20,null = True)
+
 	def __str__(self):
 	    return self.t_name + " || " + self.t_contact
 	
-        
-class Package(models.Model):
-   
-    package_name = models.CharField(max_length=20)
-    price = models.PositiveIntegerField()
-    razorpay_order_id=models.CharField(max_length=100,null=True,blank=True)
-    razorpay_payment_id=models.CharField(max_length=100,null=True,blank=True)
-    truck = models.ForeignKey(Truckpartner, on_delete=models.CASCADE ,null = True)
-    start_date = models.DateTimeField(default=timezone.now)
-    end_date = models.DateTimeField(null = True)
-
-   
-    def str(self):
-	    return self.package_name + " | |" + self.start_date

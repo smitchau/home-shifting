@@ -20,14 +20,19 @@ from myapp2 import views
 
 urlpatterns = [
     path('',views.login,name='tlogin'), 
-    path('logout/',views.logout,name='tlogout'), 
+    path('tlogout/',views.tlogout,name='tlogout'), 
     path('home/',views.home,name='thome'), 
+    path('accept/',views.accept,name='accept'), 
+    path('reject/',views.reject,name='reject'), 
+    path('finishride/',views.finishride,name='finishride'), 
     path('tsignup/',views.signup,name='tsignup'), 
     path('Mywallet/',views.Mywallet,name='Mywallet'), 
     path('contact/',views.contact,name='tcontact'), 
     path('profile/',views.profile,name='profile'), 
     path('update/',views.update,name='update'), 
     path('Withdrawal_funds/',views.Withdrawal_funds,name='Withdrawal_funds'), 
-    path('packages/',views.packages,name='packages'), 
+    path('tpackages/',views.tpackages,name='tpackages'), 
+    path('tpayments/',views.tpayments,name='tpayments'), 
     path('pdetail/',views.pdetail,name='pdetail'), 
+    path('tsuccess/', views.tsuccess, name='tsuccess'),
 ]

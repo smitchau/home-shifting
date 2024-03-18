@@ -38,7 +38,7 @@
     <!--Header -->
     <nav class="navbar navbar-expand-lg  navbar-light container-fluid py-3 position-fixed ">
         <div class="container">
-            <a class="navbar-brand" href="{% url "home" %}"><img src="{% static 'myapp/images/hm.png' %}" alt="logo" style="height: 40px; width: 150px;"></a>
+            <a class="navbar-brand" href=""><img src="{% static 'myapp/images/hm.png' %}" alt="logo" style="height: 40px; width: 150px;"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -53,7 +53,7 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav align-items-center justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link active px-3" aria-current="page" href="{% url "tsignup" %}">Home</a>
+                            <a class="nav-link active px-3" aria-current="page" href="{% url 'tsignup' %}">Home</a>
                         </li>
                     </ul>
                 </div>
@@ -86,32 +86,37 @@
     
             
             <div class="accordion col-md-8 offset-md-2" id="accordionPanelsStayOpenExample">
-                <form class="row g-3" method="POST" action="{% url "packages" %}">
+                <form class="row g-3" method="POST" action="{% url "tpackages" %}">
                    {% csrf_token %}
                     
                     <div class="col-md-12">
                       <label for="inputEmail4" class="form-label">Select House Type</label>
-                      <select class="form-select form-control p-3" id="houseType" aria-label="Default select example" style="background-image: none;" name="htype" required>
-                          <option value="" data-price="0">Select House type</option>
-                          <option value="silver" data-price="10000">silver</option>
-                          <option value="gold" data-price="20000">Gold</option>
-                          <option value="platinum" data-price="30000">platinum</option>
-                          
+                      <select class="form-select form-control p-3" id="ptype" aria-label="Default select example" style="background-image: none;" name="ptype" required>
+                          <option value="" data-price="0" data-vehicle="0">Select House type</option>
+                          <option value="silver" data-price="10000" data-vehicle="6x7">Silver</option>
+                          <option value="gold" data-price="20000" data-vehicle="6x7">Gold</option>
+                          <option value="platinum" data-price="30000" data-vehicle="5.5x14">Platinum</option>
                       </select>
                   </div>
                   <div class="col-md-12">
                     <label for="inputEmail4" class="form-label">Price</label>
                     <input  type="number"   class="form-control" id="price" placeholder="Price" name="price" readonly>
                  </div>
+
                  <div class="col-md-12">
-                    <label for="inputEmail4" class="form-label">email</label>
-                    <input type="email" class="form-control"  placeholder="email" name="email" required>
+                    <label for="inputEmail4" class="form-label">Vehicle Type</label>
+                    <input  type="text"   class="form-control" id="vtype" placeholder="Vehical type" name="vtype" readonly>
+                 </div>
+
+                 <div class="col-md-12">
+                    <label for="inputEmail4" class="form-label">Email</label>
+                    <input  type="email"   class="form-control"  placeholder="Email" name="email" required>
                  </div>
                  
     
                       
                     <div class="d-grid">
-                      <button type="submit"  class="btn btn-primary  " id="rzp-button1" id="custom-swal-dialog">purchase now</button>
+                      <button type="submit"  class="btn btn-primary" id="rzp-button1" id="custom-swal-dialog">Purchase Now</button>
                     </div>
                     
                   </form>
@@ -119,6 +124,7 @@
             
     
         </div>
+
     </section>
     
     
@@ -139,22 +145,29 @@
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.7/dist/iconify-icon.min.js"></script>
 
     <script>
-        //==========================automatic price changing =================================
+        // Automatic price and vehicle type selection
         document.addEventListener('DOMContentLoaded', function () {
-            var houseTypeSelect = document.getElementById('houseType');
+            var houseTypeSelect = document.getElementById('ptype');
             var priceInput = document.getElementById('price');
+            var vInput = document.getElementById('vtype');
         
             houseTypeSelect.addEventListener('change', function () {
                 var selectedOption = houseTypeSelect.options[houseTypeSelect.selectedIndex];
                 var price = selectedOption.getAttribute('data-price');
+                var vehicle = selectedOption.getAttribute('data-vehicle');
         
-                // Log the price value for debugging
+                // Log the price and vehicle type for debugging
                 console.log("Selected Price:", price);
+                console.log("Selected Vehicle Type:", vehicle);
         
-                // Update the price input field
+                // Update the price and vehicle type input fields
                 priceInput.value = price;
+                vInput.value = vehicle;
             });
         });
     
-    </script>
+    </script> 
+
+   
+    
 </body>

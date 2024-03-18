@@ -1,29 +1,69 @@
 {% extends 'header.html' %}
 {% load static %}
 {% block content %}
-
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Custom SweetAlert2 with Bootstrap Buttons</title>
-   <!-- Bootstrap CSS -->
-   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-   <!-- SweetAlert2 CSS -->
-   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@10" rel="stylesheet">
- </head>
-<section class="teacher-profile">
+   <title>Accept or Reject</title>
+   <style>
+       /* Styles for the pop-up */
+       .popup {
+           display: none;
+           position: fixed;
+           top: 0;
+           left: 0;
+           width: 100%;
+           height: 100%;
+           background-color: rgba(0,0,0,0.5);
+           z-index: 999;
+       }
+       .popup-content {
+           position: absolute;
+           top: 50%;
+           left: 50%;
+           transform: translate(-50%, -50%);
+           background-color: white;
+           padding: 20px;
+           border-radius: 5px;
+           width: 300px;
+       }
+   </style>
+   </head>
 
+  
 
-
+{% comment %} <section class="teacher-profile">
    <div class="details" style="height: 60rem; box-shadow: 1px 1px 2px 1px #aaaaaa;">
-      <div class="tutor">
-         
-        
-      </div>
       
    </div>
+</section> {% endcomment %}
 
-</section>
+ <section class="form-container" >
+
+   <form>
+      
+      {% if booking %}
+
+        {% if booking.status != 'finish' %}
+         <h3>Ride details</h3>
+         <p>Move From : {{booking.movefrom}}</p>
+         <p>Move To : {{booking.moveto}}</p>
+         
+         <a href="{% url "accept" %}" class="btn">accept</a>
+         <a href="{% url "reject" %}" class="option-btn">reject</a>
+         {% else %}
+            <h1 style="text-align: center;">NO RIDE  AVAILABLE!</h1>
+         {% endif %}
+      {% else %}
+      <h1 style="text-align: center;">NO RIDE  AVAILABLE!</h1>
+      {% endif %}
+   </form>
+
+   
+   
+</section> 
+
+
 
 <!--
 <section class="courses">
@@ -72,47 +112,6 @@
 
 </section>
 -->
-<!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script>
-  // Initialize SweetAlert2 with Bootstrap buttons
-  const swalWithBootstrapButtons = Swal.mixin({
-    customClass: {
-      confirmButton: "btn btn-success",
-      cancelButton: "btn btn-danger"
-    },
-    buttonsStyling: false
-  });
-
-  // Show the SweetAlert2 dialog
-  swalWithBootstrapButtons.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-    cancelButtonText: "No, cancel!",
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // If confirmed, open a link in a new page
-      window.open("https://example.com/book", "_blank");
-      // Show success message
-      swalWithBootstrapButtons.fire({
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        icon: "success"
-      });
-    } else if (result.dismiss === Swal.DismissReason.cancel) {
-      // If cancelled, show error message
-      swalWithBootstrapButtons.fire({
-        title: "Cancelled",
-        text: "Your imaginary file is safe :)",
-        icon: "error"
-      });
-    }
-  });
-</script>
 
 
 {% endblock %}

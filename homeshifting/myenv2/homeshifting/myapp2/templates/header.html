@@ -44,7 +44,7 @@
             <p class="role">Delivery Partner</p>
             <a href="{% url 'profile' %}" class="option-btn">view profile</a>
             <div class="flex-btn">
-               <a href="{% url 'tsignup' %}" class="option-btn">logout</a>
+               <a href="{% url 'tlogout' %}" class="option-btn">logout</a>
             </div>
          </div>
    
@@ -78,12 +78,12 @@
 {% block  content%}
 
 {% endblock  %}
-
+{% comment %} 
 <footer class="footer">
 
     &copy; copyright @ 2024 by <span>Home Shifting</span> | all rights reserved!
  
- </footer>
+ </footer> {% endcomment %}
  
  <!-- custom js file link  -->
  <script src="{% static 'js/script.js' %}"></script>

@@ -241,6 +241,8 @@ def utrack(request, pk):
 
 def cancle(request,pk):
     booking = Booking.objects.get(pk=pk)
+    u_email = request.session.get('email')
+    user = get_object_or_404(User, u_email=u_email)
 
     # Check if the booking is not already canceled
     if booking.status != 'cancel':
@@ -248,8 +250,22 @@ def cancle(request,pk):
         booking.status = 'cancel'
         booking.save()
 
+        subject = 'booking cancel successfully'
+        template = "ctemplate"
+        to = user.u_email
+        context = {'user':user.u_name}
+        order_id = booking.razorpay_order_id
+        mymail(subject, template, to, context,order_id)
+        print('======================send otp successfully')
+
     # Redirect back to the user's bookings page
-    return redirect('mybookings')
+        msg = "cancel bookin successfully"
+        messages.success(request,msg)
+        return redirect('mybookings')
+    else:
+        msg = "olready cancel bookin"
+        messages.error(request,msg)
+        return redirect('mybookings')
 
 
 
