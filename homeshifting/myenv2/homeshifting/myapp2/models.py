@@ -16,6 +16,7 @@ class Truckpartner(models.Model):
 	t_picture = models.ImageField(upload_to="images/" ,default="images/pic-1.jpg")
 	status = models.BooleanField(default = False)
 	on_work = models.BooleanField(default = False)
+	
 	#=============================================================================
 
 	package_type = models.CharField(max_length=20,null=True)

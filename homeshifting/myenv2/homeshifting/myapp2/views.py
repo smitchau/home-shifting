@@ -11,28 +11,48 @@ from django.utils import timezone
 
 def home(request):
     try:
+        u_email = request.session.get('email')
+        user = get_object_or_404(User, u_email=u_email)
+        booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
         truckpartner = Truckpartner.objects.get(t_email=request.session['temail'])
-        if truckpartner.status:
-            u_email = request.session.get('email')
-            user = get_object_or_404(User, u_email=u_email)
-            booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
-            if booking.htype in ['1 BHK', '2 BHK'] and truckpartner.package_type in ['silver', 'gold']:
-                return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner})
-            elif booking.htype in ['1 BHK', '2 BHK', '3 BHK', '4 BHK'] and truckpartner.package_type == 'platinum':
-                return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner}) 
-    except (Truckpartner.DoesNotExist, KeyError):
+        if truckpartner.status == True:
+            if booking.statuscheck == False:
+                if booking.status != 'finish':
+                    u_email = request.session.get('email')
+                    user = get_object_or_404(User, u_email=u_email)
+                    booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+                    if booking.htype in ['1 BHK', '2 BHK'] and truckpartner.package_type in ['silver', 'gold']:
+                        return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner})
+                    elif booking.htype in ['1 BHK', '2 BHK', '3 BHK', '4 BHK'] and truckpartner.package_type == 'platinum':
+                        return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner}) 
+    except:
         pass
     return render(request,"home.html")
 
 def accept(request):
-    truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
-    truckpartner.on_work = True
-    truckpartner.save()
-    u_email = request.session.get('email')
-    user = get_object_or_404(User, u_email=u_email)
-    booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
-    print("------------------",booking.finish_active)
-    return render(request,"accept.html",{'user':user , "booking":booking})
+    try:
+        truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
+        
+        u_email = request.session.get('email')
+        user = get_object_or_404(User, u_email=u_email)
+        booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+
+        truckpartner.on_work = True
+        truckpartner.save()
+
+        booking.statuscheck = True
+        booking.save()
+
+        u_email = request.session.get('email')
+        user = get_object_or_404(User, u_email=u_email)
+        booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+        print("------------------",booking.finish_active)
+        return render(request,"accept.html",{'user':user , "booking":booking})
+    except Exception as e:
+        print('============---------------',e)
+        pass
+    return render(request,"home.html")
+        
     
 def reject(request):
     truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
@@ -47,6 +67,7 @@ def finishride(request):
     u_email = request.session.get('email')
     user = get_object_or_404(User, u_email=u_email)
     booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+    booking.statuscheck == False
     booking.status = 'finish'
     truckpartner.save()
     booking.save()
