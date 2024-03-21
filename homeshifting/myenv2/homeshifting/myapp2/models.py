@@ -30,3 +30,27 @@ class Truckpartner(models.Model):
 	def __str__(self):
 	    return self.t_name + " || " + self.t_contact
 	
+class Rides(models.Model):
+	truckpartner = models.ForeignKey(Truckpartner,on_delete = models.CASCADE, null = True)
+	total_trip = models.PositiveIntegerField(default = 0 , null = True)
+	start_time = models.DateTimeField(null = True)
+	expiry_time = models.DateTimeField(null = True)
+	today_earning = models.PositiveBigIntegerField(default = 0, null = True)
+	total_earning = models.PositiveBigIntegerField(default = 0, null = True)
+
+	def __str__(self):
+	    return self.truckpartner.t_name	
+	
+class Transactions(models.Model):
+	truckpartner = models.ForeignKey(Truckpartner,on_delete=models.CASCADE , null = True)
+	rides = models.ForeignKey(Rides,on_delete=models.CASCADE , null = True)
+	account_holder_name = models.CharField(max_length = 20)
+	account_number = models.PositiveIntegerField()
+	ifsc_code = models.PositiveIntegerField()
+	date = models.DateField(default = timezone.now)
+	amount = models.PositiveBigIntegerField(default = 0)
+
+	def __str__(self):
+		return self.truckpartner.t_name 
+	
+

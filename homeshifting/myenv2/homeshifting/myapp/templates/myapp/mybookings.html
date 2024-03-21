@@ -61,10 +61,7 @@
                             <td>{{i.razorpay_order_id}}</td>
                             <td>{{i.razorpay_payment_id}}</td>
                             <td><a href="{% url "utrack" pk=i.pk %}" class="btn btn-success" title="Track Status">CheckStatus</a></td>
-                            <td><a href="{% url 'cancle' pk=i.pk %}" class="btn btn-danger" title="Track Status">Cancle</a></td>
-                            
-                            
-                           
+                            <td><a href="{% url 'cancle' pk=i.pk %}" class="btn btn-danger" title="Track Status">Cancle</a></td>        
                         </tr>
                         {% endfor %}
                         

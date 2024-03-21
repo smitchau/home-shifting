@@ -18,14 +18,19 @@ def home(request):
         if truckpartner.status == True:
             if booking.statuscheck == False:
                 if booking.status != 'finish':
-                    u_email = request.session.get('email')
-                    user = get_object_or_404(User, u_email=u_email)
-                    booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
-                    if booking.htype in ['1 BHK', '2 BHK'] and truckpartner.package_type in ['silver', 'gold']:
+                    # u_email = request.session.get('email')
+                    # user = get_object_or_404(User, u_email=u_email)
+                    # booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+                    if booking.htype in ['2 BHK'] and truckpartner.package_type in ['silver', 'gold','platinum']:
                         return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner})
+                    elif booking.htype in ['1 BHK'] and truckpartner.package_type in ['silver', 'platinum']:
+                        return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner}) 
+                    elif booking.htype in ['3 BHK'] and truckpartner.package_type in ['gold', 'platinum']:
+                        return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner}) 
                     elif booking.htype in ['1 BHK', '2 BHK', '3 BHK', '4 BHK'] and truckpartner.package_type == 'platinum':
                         return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner}) 
-    except:
+    except Exception as e:
+        print(e)
         pass
     return render(request,"home.html")
 
@@ -39,6 +44,8 @@ def accept(request):
 
         truckpartner.on_work = True
         truckpartner.save()
+
+        booking.status = "on-the-way"
 
         booking.statuscheck = True
         booking.save()
@@ -71,8 +78,38 @@ def finishride(request):
     booking.status = 'finish'
     truckpartner.save()
     booking.save()
+
+    #----------------------------------------------------
+    u_email = request.session.get('email')
+    user = get_object_or_404(User, u_email=u_email)
+    booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+
+    
+    # Check if the last ride was more than 24 hours ago
+    ride = Rides.objects.get(truckpartner=truckpartner)
+
+    if ride.today_earning == 0:
+        ride.start_time =  timezone.now()
+        ride.expiry_time = ride.start_time + timedelta(days=1)
+        ride.save()
+
+    current_datetime = timezone.now()
+
+    if current_datetime >= ride.expiry_time:
+            # If last ride was more than 24 hours ago, reset today's earnings to 0
+        ride.today_earning = 0
+        ride.save()
+
+        # Update total_trip and total_earning
+    ride.total_trip += 1
+    ride.today_earning += booking.price
+    ride.total_earning += booking.price
+    ride.save()
+
     print("------------------------------",booking.finish_active)
     return redirect('thome')
+
+
 
 def signup(request):
     if request.POST:
@@ -164,6 +201,14 @@ def tsuccess(request):
 
         print('========================================',truck.razorpay_payment_id)
         truck.save()
+
+        ride = Rides.objects.create(
+
+            truckpartner = truck
+        
+        )
+        print("---------------create ride for truckpartners",ride)
+
         return render(request,'tsuccess.html')
     except Exception as e:
         print(e)
@@ -222,32 +267,96 @@ def tlogout(request):
         return render(request,'login.html')
     
 def Mywallet(request):
-    return render(request,'Mywallet.html')
+    try:
+        truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
+        ride = Rides.objects.get(truckpartner = truckpartner)
+        print("============",ride)
+        transactions = Transactions.objects.filter(truckpartner = truckpartner)
+        print("============",transactions)
+        current_datetime = timezone.now()
+
+        if current_datetime >= ride.expiry_time:
+            # If last ride was more than 24 hours ago, reset today's earnings to 0
+            ride.today_earning = 0
+            ride.save()
+
+        return render(request,'Mywallet.html',{'ride':ride,'transactions':transactions})
+    except Exception as e:
+        print(e)
+        return render(request,'Mywallet.html')
 
 def update(request):
-    if request.POST:
+    try:
         truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
-        truckpartner.t_name = request.POST['name']
-        truckpartner.t_contact = request.POST['number']
-        if 'picture' in request.FILES:
-            truckpartner.t_picture = request.FILES['picture']
-        
-        truckpartner.save()
+        if request.POST:
+            truckpartner.t_name = request.POST['name']
+            truckpartner.t_contact = request.POST['number']
+            if 'picture' in request.FILES:
+                truckpartner.t_picture = request.FILES['picture']
+            
+            truckpartner.save()
 
-        request.session['tname'] = truckpartner.t_name
-        request.session['tpicture'] = truckpartner.t_picture.url
-        request.session['tcontact'] = truckpartner.t_contact
-        
-        msg ="profile successfully update"
-        messages.success(request,msg)
-        return redirect('profile')
-    else:
-        return render(request,"update.html")
+            request.session['tname'] = truckpartner.t_name
+            request.session['tpicture'] = truckpartner.t_picture.url
+            request.session['tcontact'] = truckpartner.t_contact
+            
+            msg ="profile successfully update"
+            messages.success(request,msg)
+            return redirect('profile')
+        else:
+            return render(request,"update.html")
+    except:
+        pass
 
 def profile(request):
     truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
-    return render(request,'profile.html',{"truckpartner":truckpartner})
+    ride = Rides.objects.get(truckpartner = truckpartner)
+    current_datetime = timezone.now()
 
+    if current_datetime >= ride.expiry_time:
+            # If last ride was more than 24 hours ago, reset today's earnings to 0
+        ride.today_earning = 0
+        ride.save()
+    print(ride.today_earning)
+    return render(request,'profile.html',{"truckpartner":truckpartner , 'ride':ride})
+   
 def Withdrawal_funds(request):
-    return render(request,'Withdrawal_funds.html')
+    try:
+        truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
+        ride = Rides.objects.get(truckpartner = truckpartner)
+
+        if request.POST:
+            print("==========post")
+            if request.POST['accountno'] == request.POST["caccountno"]:
+                print("==========first",type(ride.total_earning))
+                print("==========first",type(request.POST["amount"]))
+                if ride.total_earning >= int(request.POST["amount"]):
+                    print("==========second")
+                    transactions = Transactions.objects.create(
+                        truckpartner = truckpartner,
+                        rides = ride,
+                        account_holder_name = request.POST['hname'],
+                        account_number = request.POST['accountno'],
+                        ifsc_code = request.POST['ifsc_code'],
+                        amount = request.POST['amount'],
+                    )
+
+                    ride.total_earning -= int(request.POST["amount"])
+                    ride.save()
+
+                    return render(request,'Mywallet.html')
+                else:
+                    msg="your balance low please enter limited amount !!"
+                    messages.error(request,msg)
+                    return render(request,'Withdrawal_funds.html')
+            else:
+                msg="account number and confirm account number does not match !!"
+                messages.error(request,msg)
+                return render(request,'Withdrawal_funds.html')
+        else:
+            return render(request,'Withdrawal_funds.html')
+        
+    except Exception as e:
+        print(e)
+        return render(request,'Withdrawal_funds.html')
 

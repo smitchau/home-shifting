@@ -16,7 +16,7 @@
          <a href="{% url 'update' %}" class="inline-btn">update profile</a>
       </div>
 
-      <div class="box" style="height: 500px; box-shadow: 1px 1px 2px 1px #aaaaaa;">
+      <div class="box" >
          <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your Name : <span style="color:#aaaaaa;">{{truckpartner.t_name}}</span></h2>
          <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your Email : <span style="color:#aaaaaa;">{{truckpartner.t_email}}</span></h2>
          <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your Contact : <span style="color:#aaaaaa;">{{truckpartner.t_contact}}</span></h2>
@@ -24,6 +24,10 @@
          <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your Pancard : <span style="color:#aaaaaa;">{{truckpartner.t_pancard_details}}</span></h2>
          <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your Driving Licence : <span style="color:#aaaaaa;">{{truckpartner.t_drivinglicence_details}}</span></h2>
          <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your RC BOOK: <span style="color:#aaaaaa;">{{truckpartner.t_rcnumber}}</span></h2>
+         <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your package type : <span style="color:#aaaaaa;">{{truckpartner.package_type}}</span></h2>
+         <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">price : <span style="color:#aaaaaa;">{{truckpartner.price}}</span></h2>
+         <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your package start date : <span style="color:#aaaaaa;">{{truckpartner.start_date}}</span></h2>
+         <h2 style="color: #94CA21; padding-top: 39px; padding-left: 40px;">Your package end date : <span style="color:#aaaaaa;">{{truckpartner.end_date}}</span></h2>
          
       </div>
 
@@ -34,7 +38,7 @@
             <div class="flex">
                <i class="fas fa-bookmark"></i>
                <div>
-                  <span>4</span>
+                  <span>{{ride.total_trip}}</span>
                   <p>Total Trip</p>
                </div>
             </div>
@@ -45,7 +49,7 @@
             <div class="flex">
                <i class="fa-solid fa-indian-rupee-sign"></i>
                <div>
-                  <span>33</span>
+                  <span>{{ride.today_earning}}</span>
                   <p>Today Erning</p>
                </div>
             </div>
@@ -56,7 +60,7 @@
             <div class="flex">
                <i class="fa-solid fa-indian-rupee-sign"></i>
                <div>
-                  <span>12</span>
+                  <span>{{ride.total_earning}}</span>
                   <p>Total Erning</p>
                </div>
             </div>
