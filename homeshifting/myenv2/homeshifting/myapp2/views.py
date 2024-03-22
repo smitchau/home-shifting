@@ -272,6 +272,10 @@ def Mywallet(request):
         ride = Rides.objects.get(truckpartner = truckpartner)
         print("============",ride)
         transactions = Transactions.objects.filter(truckpartner = truckpartner)
+        a = 0
+        for i in transactions:
+            a += i.amount
+        
         print("============",transactions)
         current_datetime = timezone.now()
 
@@ -280,7 +284,7 @@ def Mywallet(request):
             ride.today_earning = 0
             ride.save()
 
-        return render(request,'Mywallet.html',{'ride':ride,'transactions':transactions})
+        return render(request,'Mywallet.html',{'ride':ride,'transactions':transactions,'a':a})
     except Exception as e:
         print(e)
         return render(request,'Mywallet.html')
@@ -344,7 +348,7 @@ def Withdrawal_funds(request):
                     ride.total_earning -= int(request.POST["amount"])
                     ride.save()
 
-                    return render(request,'Mywallet.html')
+                    return redirect('Mywallet')
                 else:
                     msg="your balance low please enter limited amount !!"
                     messages.error(request,msg)
@@ -359,4 +363,29 @@ def Withdrawal_funds(request):
     except Exception as e:
         print(e)
         return render(request,'Withdrawal_funds.html')
+    
+def changepassword(request):
+    if request.POST:
+        truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
+        if truckpartner.t_password == request.POST["current_pass"]:
+            if request.POST["new_pass"] == request.POST["c_pass"]:
 
+                truckpartner.t_password = request.POST["new_pass"]
+                truckpartner.save()
+
+                del request.session['temail']
+                del request.session['tpassword']
+                del request.session['tname']
+                del request.session['tpicture']
+                del request.session['tcontact']
+                return redirect('tsignup')
+            else:
+                msg = "new password and confirm password does not match !!"
+                messages.error(request,msg)
+                return render(request,'changepassword.html')
+        else:
+            msg = "current password does not match !!"
+            messages.error(request,msg)
+            return render(request,'changepassword.html')
+    else:
+        return render(request,'changepassword.html')

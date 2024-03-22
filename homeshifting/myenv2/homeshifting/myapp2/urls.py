@@ -35,4 +35,5 @@ urlpatterns = [
     path('tpayments/',views.tpayments,name='tpayments'), 
     path('pdetail/',views.pdetail,name='pdetail'), 
     path('tsuccess/', views.tsuccess, name='tsuccess'),
+    path('changepassword/', views.changepassword, name='changepassword'),
 ]
