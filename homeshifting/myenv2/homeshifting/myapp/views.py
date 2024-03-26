@@ -116,7 +116,10 @@ def home(request):
                 print(booking)
                 context = {'booking': booking}
                 return render(request, "myapp/utrack.html",context)
-
+        else:
+            msg = "invalid"
+            messages.error(request,msg)
+            return render(request,'myapp/index.html')
     else:
         return render(request,'myapp/index.html')
 
@@ -223,9 +226,19 @@ def success(request):
         messages.info(request,msg)
         return render(request,"myapp/index.html")
 
- 
 def contact(request):
-    return render(request,'myapp/contact.html')
+    if request.POST:
+        contact = Contact.objects.create(
+            name = request.POST['name'],
+            email = request.POST['email'],
+            number = request.POST['number'],
+            message = request.POST['msg']
+        )
+        msg = "message successfully send"
+        messages.success(request,msg)
+        return render(request,'myapp/index.html')
+    else:
+        return render(request,'myapp/contact.html')
 
 def mybookings(request):
     user = User.objects.get(u_email = request.session['email'])

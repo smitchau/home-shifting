@@ -17,7 +17,7 @@ def home(request):
         truckpartner = Truckpartner.objects.get(t_email=request.session['temail'])
         if truckpartner.status == True:
             if booking.statuscheck == False:
-                if booking.status != 'finish':
+                if booking.status != 'finish' and  booking.status != 'cancle':
                     # u_email = request.session.get('email')
                     # user = get_object_or_404(User, u_email=u_email)
                     # booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
@@ -31,7 +31,7 @@ def home(request):
                         return render(request, "home.html", {'user': user, "booking": booking, "truckpartner": truckpartner}) 
     except Exception as e:
         print(e)
-        pass
+        return render(request,'home.html')
     return render(request,"home.html")
 
 def accept(request):
@@ -65,6 +65,12 @@ def reject(request):
     truckpartner = Truckpartner.objects.get(t_email = request.session['temail'])
     truckpartner.on_work = False
     truckpartner.save()
+    reject_status = False
+    if truckpartner.on_work == False:
+        reject_status =True
+        msg = "Ride Rejected successfully."
+        messages.success(request,msg)
+        return render (request,'home.html',{'reject_status':reject_status})
     return redirect('thome')
 
 def finishride(request):
@@ -216,7 +222,16 @@ def tsuccess(request):
     
  
 def contact(request):
-    return render(request,'contact.html')
+    if request.POST:
+        contact = Contact.objects.create(
+            name = request.POST['name'],
+            email = request.POST['email'],
+            number = request.POST['number'],
+            message = request.POST['msg']
+        )
+        return render(request,'home.html')
+    else:
+        return render(request,'contact.html')
 
 def login(request):
     if request.POST:
@@ -350,7 +365,7 @@ def Withdrawal_funds(request):
 
                     return redirect('Mywallet')
                 else:
-                    msg="your balance low please enter limited amount !!"
+                    msg="inficiunce Balance!!"
                     messages.error(request,msg)
                     return render(request,'Withdrawal_funds.html')
             else:

@@ -27,12 +27,13 @@
             
             <div class="accordion col-md-6 offset-md-3" id="accordionPanelsStayOpenExample">
                
-                <form class="row g-3">
+                <form class="row g-3" action="{% url 'contact' %}" method="post">
+                  {% csrf_token %}
                     <div class="col-md-12">
                         <label for="exampleInputEmail1"
                         class="form-label fs-6 text-uppercase fw-bold text-black">Name
                         </label>
-                      <input type="Name" class="form-control" id="inputEmail4" placeholder="Enter your Name">
+                      <input type="name" name="name" class="form-control" id="inputEmail4" placeholder="Enter your Name">
                     </div>
                     
                     
@@ -45,7 +46,7 @@
                         <label for="exampleInputEmail1"
                         class="form-label fs-6 text-uppercase fw-bold text-black">Email
                         </label>
-                        <input type="text" class="form-control"  placeholder="Enter your Email">
+                        <input type="text" class="form-control" name="email"  placeholder="Enter your Email">
                       </div>
                       
 
@@ -57,7 +58,7 @@
                         <label for="exampleInputEmail1"
                         class="form-label fs-6 text-uppercase fw-bold text-black">Contact Number
                         </label>
-                      <input type="text" class="form-control" id="inputZip" placeholder="Enter your Contact Number">
+                      <input type="text" class="form-control" name="number" id="inputZip" placeholder="Enter your Contact Number">
                     </div>
                     <div class="col-md-6">
                        
@@ -67,7 +68,7 @@
                         <label for="exampleInputEmail1"
                         class="form-label fs-6 text-uppercase fw-bold text-black">Message
                         </label>
-                      <textarea name="" class="form-control ps-3" rows="8"></textarea>
+                      <textarea name="msg" class="form-control ps-3" rows="8"></textarea>
                     </div>
                     <div class="col-md-6">
                        

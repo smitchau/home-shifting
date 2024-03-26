@@ -56,7 +56,16 @@ class Booking(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return  self.bname + " || " + self.htype   
+        return  self.bname + " || " + self.htype
+
+class Contact(models.Model):
+	name = models.CharField(max_length=50)
+	email = models.EmailField(max_length=50)
+	number = models.CharField(max_length=50)
+	message = models.TextField(max_length=1000)
+	
+	def __str__(self):
+		return self.name   
 
 """
 class fleet(models.Model):
