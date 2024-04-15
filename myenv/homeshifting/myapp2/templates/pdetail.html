@@ -1,0 +1,197 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Shifting</title>
+
+    <!--vendor css ================================================== -->
+    <link rel="stylesheet" type="text/css" href="{% static 'myapp/css/vendor.css' %}">
+
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+
+    <!--Bootstrap ================================================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+    <!-- Style Sheet ================================================== -->
+    <link rel="stylesheet" type="text/css" href="{% static 'myapp/css/style.css'%}">
+
+    <!-- Google Fonts ================================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Raleway:wght@400;700&display=swap"
+        rel="stylesheet">
+
+
+    <!-- script ================================================== -->
+    <script src="{% static 'myapp/js/modernizr.js' %}"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#header-nav" tabindex="0">
+    <!--Header -->
+    <nav class="navbar navbar-expand-lg  navbar-light container-fluid py-3 position-fixed ">
+        <div class="container">
+            <a class="navbar-brand" href=""><img src="{% static 'myapp/images/hm.png' %}" alt="logo" style="height: 40px; width: 150px;"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav align-items-center justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link active px-3" aria-current="page" href="{% url "thome" %}">Home</a>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+<br>
+<section id="pricing">
+    <div class=" container  py-5 my-5">
+        <h2 class=" text-center my-5">See our <span class="text-primary">pricing </span> </h2>
+
+        <div class="d-flex justify-content-center">
+            <label class="pt-2" id="monthly-label" style="display: none;">Monthly</label>
+            <span class="form-check form-switch p-0">
+                <input class="form-check-input mx-2" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                    checked style="display: none;">
+                <label class="pt-2" id="yearly-label" for="flexSwitchCheckChecked" style="display: none;">Yearly</label>
+            </span>
+        </div>
+
+        <div class="row py-4">
+            <div class="  col-lg-3 col-sm-6 col-12 pb-4">
+                <div class=" pricing-lable pt-5 ">
+                    <div class="pt-3 ps-2">
+                        <h3>Save by choosing our best plan</h3>
+                        <p>Choose our best plan to save a lot.</p>
+                    </div>
+
+                    <iconify-icon class="pricing-lable-icon "
+                        icon="fluent:vehicle-car-profile-ltr-20-regular"></iconify-icon>
+
+
+                </div>
+            </div>
+
+            <div class=" col-lg-3 col-sm-6 col-12 pb-8">
+                <div class=" pricing-detail py-5 text-center">
+                    <div class="pricing-content">
+                        <h5>Silver</h5>
+
+                        
+                        <div class="content yearly pt-2">
+                            <h3><img src="{% static 'myapp/images/currency-rupee.svg' %} " style="height: 2rem; padding-bottom: 0.3rem;" alt="">10000</h3>
+                        </div>
+
+                        <div class="pt-4">
+                            <p>✓ There are 20 fix trips</p>
+                            <p>✓ Only can send 1BHK And 2BHK</p>
+                            <p>✓ IF we Can not able to<br>
+                                provide Fixed Trips then<br> 
+                                provide package money with<br>
+                                20% extra return and completed<br> 
+                                trips in 75% go to partner<br>
+                                and 25% is our margin.<br>
+                            </p>
+                            <p>✓ IF we give trips then all<br>
+                                money can withdrew by partner<br>
+                                after completing package<br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pricing-button">
+                        <a href="{% url "tpackages" %}"><button class="btn btn-primary">Choose Plan </button></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class=" col-lg-3 col-sm-6 col-12 pb-4">
+                <div class=" pricing-detail py-5  text-center">
+                    <div class="pricing-content">
+                        <h5>Gold</h5>
+                        
+                        <div class="content yearly pt-2">
+                            <h3><img src="{% static 'myapp/images/currency-rupee.svg' %} " style="height: 2rem; padding-bottom: 0.3rem;" alt="">20000</h3>
+                        </div>
+
+                        <div class="pt-4">
+                            <p>✓ There are 25 fix trips</p>
+                            <p>✓ Only can send 2BHK And 3BHK</p>
+                            <p>✓ IF we Can not able to<br>
+                                provide Fixed Trips then<br> 
+                                provide package money with<br>
+                                25% extra return and completed<br> 
+                                trips in 80% go to partner<br>
+                                and 20% is our margin.<br>
+                            </p>
+                            <p>✓ IF we give trips then all<br>
+                                money can withdrew by partner<br>
+                                after completing package<br>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="pricing-button">
+                        <a href="{% url "tpackages" %}"><button class="btn btn-primary">Choose Plan </button></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class=" col-lg-3 col-sm-6 col-12 pb-4">
+                <div class=" pricing-detail py-5  text-center">
+                    <div class="pricing-content">
+                        <h5>Platinum</h5>
+                        
+                        <div class="content yearly pt-2">
+                            <h3><img src="{% static 'myapp/images/currency-rupee.svg' %} " style="height: 2rem; padding-bottom: 0.3rem;" alt="">30000</h3>
+                        </div>
+
+                        <div class="pt-4">
+                            <p>✓ There are 30 fix trips</p>
+                            <p>✓ Only can send all type of Home</p>
+                            <p>✓ IF we Can not able to<br>
+                                provide Fixed Trips then<br> 
+                                provide package money with<br>
+                                30% extra return and completed<br> 
+                                trips in 90% go to partner<br>
+                                and 10% is our margin.<br>
+                            </p>
+                            <p>✓ IF we give trips then all<br>
+                                money can withdrew by partner<br>
+                                after completing package<br>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="pricing-button">
+                        <a href="{% url "tpackages" %}"><button class="btn btn-primary">Choose Plan </button></a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+</section>

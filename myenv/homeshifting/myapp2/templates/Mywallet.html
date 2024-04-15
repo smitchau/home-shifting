@@ -1,0 +1,97 @@
+{% extends 'header.html' %}
+{% load static %}
+{% block content %}
+
+
+
+<section class="comments">
+
+   <section class="user-profile">
+
+      <h1 class="heading">My Wallet</h1>
+   
+      <div class="info" style="box-shadow: 1px 1px 2px 1px #aaaaaa;">
+   
+      
+         <div class="box-container">
+      
+            <div class="box" style="  box-shadow: 1px 1px 2px 1px #aaaaaa;">
+               <div class="flex">
+                  <i class="fa-solid fa-indian-rupee-sign"></i>
+
+                <div>
+                     <span>{{ride.today_earning}}</span>
+                     <p>Today Ernig</p>
+                  </div>
+               </div>
+               <!--<a href="#" class="inline-btn">view</a>-->
+            </div>
+      
+            <div class="box" style="  box-shadow: 1px 1px 2px 1px #aaaaaa;">
+               <div class="flex">
+                  <i class="fa-solid fa-indian-rupee-sign"></i>
+                  <div>
+                     <span>{{ride.total_earning}}</span>
+                     <p>Total Erning</p>
+                  </div>
+               </div>
+               <!--<a href="#" class="inline-btn">view liked</a>-->
+            </div>
+      
+            <div class="box" style="box-shadow: 1px 1px 2px 1px #aaaaaa;">
+               <div class="flex">
+                  <i class="fa-solid fa-indian-rupee-sign"></i>
+                  <div>
+                     <span>{{a}}</span>
+                     <p>Withdraw Amount</p>
+                  </div>
+               </div>
+               <!--<a href="#" class="inline-btn">view comments</a>-->
+            </div>
+            
+         <div class="user">
+            <a href="{% url 'Withdrawal_funds' %}" class="inline-btn " >Withdraw Funds</a>
+         </div>
+      
+         </div>
+      </div>
+      
+   </section>
+
+   <h1 class="heading"> Transaction history </h1>
+
+   <div class="box-container">
+     <!-- <div class="box">
+         <div class="user">
+            <img src="{% static 'images/pic-1.jpg' %}" alt="">
+            <div>
+               <h3>shaikh anas</h3>
+               <span>22-10-2022</span>
+            </div>
+         </div>
+         <div class="comment-box">this is a comment form shaikh anas</div>
+         <form action="" class="flex-btn">
+            <input type="submit" value="edit comment" name="edit_comment" class="inline-option-btn">
+            <input type="submit" value="delete comment" name="delete_comment" class="inline-delete-btn">
+         </form>
+      </div>-->
+
+      {% for i in transactions %}
+      <div class="box" >
+         <div class="user" >
+            <img src="{% static 'images/pic-1.jpg' %}" alt="">
+            <div>
+               <h3>{{i.account_holder_name}}</h3>
+               <span>{{i.date}}</span>
+            </div>
+         </div>
+         <div class="comment-box" style="box-shadow: 1px 1px 2px 1px #aaaaaa;">
+            {% comment %} <h4>SBI bank</h4> {% endcomment %}
+            <h5>Trsaction id {{i.account_number}} <span style="float: right;"><i class="fa-solid fa-indian-rupee-sign"> {{i.amount}}</span></h5></i>
+         </div>
+      </div>
+      {% endfor %}
+   </div>
+
+</section>
+{% endblock %}

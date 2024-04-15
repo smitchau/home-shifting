@@ -1,0 +1,44 @@
+{% extends 'header.html' %}
+{% load static %}
+{% block content %}
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Accept or Reject</title>
+  
+</head>
+
+  
+
+ <section class="form-container" >
+
+   <form id ='formdata'>
+      {% if reject_status != True %}
+      {% if booking %}
+
+        {% if booking.status != 'finish' %}
+         <h3>Ride details</h3>
+         <p>Move From : {{booking.movefrom}}</p>
+         <p>Move To : {{booking.moveto}}</p>
+         
+         <a href="{% url "accept" %}" class="btn">accept</a>
+         <a href="{% url "reject" %}" class="option-btn">reject</a>
+         {% else %}
+            <h1 style="text-align: center;">NO RIDE  AVAILABLE!</h1>
+         {% endif %}
+      {% else %}
+         <h1 style="text-align: center;">NO RIDE  AVAILABLE!</h1>
+      {% endif %}
+      {% else %}
+        <h1 style="text-align: center;">NO RIDE  AVAILABLE!</h1>
+      {% endif %}
+   </form>
+
+   
+   
+</section> 
+
+
+
+
+{% endblock %}
