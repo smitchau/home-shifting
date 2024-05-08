@@ -188,6 +188,8 @@ def tpackages(request):
 
         except Exception as e:
             print("===================================",e)
+            msg = "Email is not register..!"
+            messages.info(request,msg)
             return render(request,"tpackages.html")
     else:
         return render(request,"tpackages.html")
@@ -282,6 +284,88 @@ def tlogout(request):
             return redirect('tsignup')
     else:
         return render(request,'login.html')
+    
+def tforgate_pass(request):
+    if request.POST:
+        try:
+            print("====================================page loade =======================================")
+            truckpartner = Truckpartner.objects.get(t_contact = request.POST['contact'])
+            mobile = request.POST['contact']
+            otp = random.randint(1000,9999)
+            print(type(otp))
+
+            url = "https://www.fast2sms.com/dev/bulkV2"
+            querystring = {
+                           "authorization":"49df8FP3OhnqKAuB6OcTLAAEMmfB23tmRFHiDFZRZ7zrpONWyuhl6B3wFteN",
+                           "variables_values":str(otp),
+                           "route":"otp",
+                           "numbers":mobile
+                        }
+
+            headers = {
+                'cache-control': "no-cache"
+               }
+
+            response = requests.request("GET", url, headers=headers, params=querystring)
+            msg = "Otp Sent Successfully.........."
+            print(msg)
+            print(response.text)
+            request.session['mobile']=mobile
+            request.session['otp']=otp
+            return render(request,'totp.html')
+        except Exception as e:
+                print(e)
+                print("===========except page loade==============")
+                msg = "invalid Phone Number  !!!"
+                messages.info(request,msg)
+                return render(request,"tforgate_pass.html")
+    else:
+        print("==============================else part run ====================================")
+        return render(request,"tforgate_pass.html")
+    
+
+def totp(request):
+    if request.method=="POST":     
+        otp = int(request.session['otp'])
+        uotp = int(request.POST['uotp'])
+        print(type(otp))
+        print(type(uotp))
+        
+        if otp==uotp:
+          print("Hello")
+          del request.session['otp']
+          return render(request,"tnewpass.html")
+        else:
+          msg = "Invalid Otp"
+          print(msg)
+          messages.error(request,msg)
+          return render(request,"totp.html")
+    else:
+        return render(request,"totp.html")
+    
+def tnewpass(request):
+    print("=========== resetpage page hello===============")
+    if request.POST:
+         print("=========== request page hello===============")
+         try:
+            print("===========hello===============")
+            truckpartner = Truckpartner.objects.get(t_contact = request.session['mobile'])
+            if request.POST['npassword']==request.POST['cnpassword']:
+                print("===========1  hello===============")
+                truckpartner.t_password =request.POST['npassword']
+                truckpartner.save()
+                return redirect('tlogin')
+            else:
+                msg = "password and confirm password does not match !!"
+                print(msg)
+                messages.error(request,msg)
+                return render(request,'tnewpass.html')
+         except Exception as e:
+            print(e)
+            return render(request,'tnewpass.html')
+    else: 
+        return render(request,'tnewpass.html')
+
     
 def Mywallet(request):
     try:

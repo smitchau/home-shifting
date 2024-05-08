@@ -148,7 +148,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'smitchauhan2712@gmail.com'
-EMAIL_HOST_PASSWORD = 'nmia gffw ybld dukj'
+EMAIL_HOST_PASSWORD = 'fxsx ifxp qriz pajt'
+
 
 
 JAZZMIN_SETTINGS = JAZZMIN_SETTINGS

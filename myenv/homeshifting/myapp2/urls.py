@@ -21,6 +21,9 @@ from myapp2 import views
 urlpatterns = [
     path('',views.login,name='tlogin'), 
     path('tlogout/',views.tlogout,name='tlogout'), 
+    path('tforgate_pass.html/',views.tforgate_pass,name='tforgate_pass'), 
+    path('totp.html/',views.totp,name='totp'), 
+    path('tnewpass.html/',views.tnewpass,name='tnewpass'), 
     path('home/',views.home,name='thome'), 
     path('accept/',views.accept,name='accept'), 
     path('reject/',views.reject,name='reject'), 

@@ -187,6 +187,63 @@ def booking(request):
 def payments(request):
     return render(request,"myapp/payments.html")
 
+def forgate_pass(request):
+    if request.method=="POST":
+        try:
+            user= User.objects.get(u_email = request.POST['email'])
+            request.session['email'] = user.u_email
+            otp = random.randint(1000,9999)
+            request.session['otp'] = otp
+            subject = 'OTP For Forgot Password'
+            message = 'Hello '+user.u_name+" , Your OTP : "+str(otp)
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [user.u_email, ]
+            send_mail( subject, message, email_from, recipient_list )
+            return render(request,'myapp/otp.html',{'email':user.u_email,'otp':otp})
+        except:
+            msg = "Email Does Not Exist !!!"
+            messages.info(request,msg)
+            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",msg)
+            return render(request,'myapp/forgate_pass.html',{'msg':msg})
+    else:
+        return render(request,'myapp/forgate_pass.html')
+    
+
+def otp(request):
+    if request.POST:
+        uotp=int(request.POST['otp'])
+        print("uotp",type(uotp))
+        print(request.session['otp'],type(request.session['otp']))
+        
+        if uotp == request.session['otp']:
+            return render(request,'myapp/newpass.html')
+        else:
+            msg="Invalid OTP"
+            messages.info(request,msg)
+            return render(request,'myapp/otp.html')
+    #return render(request,'myapp/otp.html')
+
+def newpass(request):
+   if request.POST:
+        np = request.POST['new_pass']
+        cnp = request.POST['cnew_pass']
+
+        if np==cnp:
+            user=User.objects.get(u_email = request.session['email'])
+            user.u_password=np
+            user.save()
+            del request.session['email']
+            del request.session['otp']
+            msg1="Password Updated :) "
+            messages.success(request,msg1)
+            return render(request, 'myapp/index.html')
+
+        else:
+            msg="New Password & Confirm Password Does not match !!!"
+            messages.info(request,msg)
+            return render(request,"new_pswd.html")
+       
+
 def mymail(subject, template, to, context,order_id):
     subject = subject
     template_str = 'myapp/' + template +'.html'
@@ -204,32 +261,37 @@ def mymail(subject, template, to, context,order_id):
     )
     
 def success(request):
-   u_email = request.session.get('email')
+    u_email = request.session.get('email')
 
-   if u_email:
-        user = get_object_or_404(User, u_email=u_email)
-        booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
+    if u_email:
+            user = get_object_or_404(User, u_email=u_email)
+            booking = Booking.objects.filter(userid=user).latest('razorpay_order_id')
 
-        razorpay_payment_id = request.GET.get('razorpay_payment_id')
+            razorpay_payment_id = request.GET.get('razorpay_payment_id')
 
-        if razorpay_payment_id:
-            # Update the booking instance with the Razorpay payment ID
-            booking.razorpay_payment_id = razorpay_payment_id
-            booking.save()
+            if razorpay_payment_id != "":
+                # Update the booking instance with the Razorpay payment ID
+                booking.razorpay_payment_id = razorpay_payment_id
+                booking.save()
 
-            subject = 'booking successfully'
-            template = "etemplate"
-            to = user.u_email
-            context = {'user':user.u_name}
-            order_id = booking.razorpay_order_id
-            mymail(subject, template, to, context,order_id)
-            print('======================send otp successfully')
+                subject = 'booking successfully'
+                template = "etemplate"
+                to = user.u_email
+                context = {'user':user.u_name}
+                order_id = booking.razorpay_order_id
+                mymail(subject, template, to, context,order_id)
+                print('======================send otp successfully')
 
-        return render(request,'myapp/success.html')
-   else:
-        msg= "Please login....."
-        messages.info(request,msg)
-        return render(request,"myapp/index.html")
+                return render(request,'myapp/success.html')
+            else:
+                msg= "Please Book Ride Again Payment are not store....."
+                messages.info(request,msg)
+                booking.delete()
+                return render(request,"myapp/index.html")
+    else:
+            msg= "Please login....."
+            messages.info(request,msg)
+            return render(request,"myapp/index.html")
 
 def contact(request):
     if request.POST:
@@ -263,26 +325,31 @@ def cancle(request,pk):
     user = get_object_or_404(User, u_email=u_email)
 
     # Check if the booking is not already canceled
-    if booking.status != 'cancel':
-        # Set the status to 'cancel'
-        booking.status = 'cancel'
-        booking.save()
+    if booking.status != 'finish':
+        if booking.status != 'cancel':
+            # Set the status to 'cancel'
+            booking.status = 'cancel'
+            booking.save()
 
-        subject = 'booking cancel successfully'
-        template = "ctemplate"
-        to = user.u_email
-        context = {'user':user.u_name}
-        order_id = booking.razorpay_order_id
-        mymail(subject, template, to, context,order_id)
-        print('======================send otp successfully')
+            subject = 'booking cancel successfully'
+            template = "ctemplate"
+            to = user.u_email
+            context = {'user':user.u_name}
+            order_id = booking.razorpay_order_id
+            mymail(subject, template, to, context,order_id)
+            print('======================send otp successfully')
 
-    # Redirect back to the user's bookings page
-        msg = "cancel bookin successfully"
-        messages.success(request,msg)
-        return redirect('mybookings')
+        # Redirect back to the user's bookings page
+            msg = "cancel bookin successfully"
+            messages.success(request,msg)
+            return redirect('mybookings')
+        else:
+            msg = "olready cancel bookin"
+            messages.error(request,msg)
+            return redirect('mybookings')
     else:
-        msg = "olready cancel bookin"
-        messages.error(request,msg)
+        msg = "Booking alredy finish..!"
+        messages.info(request,msg)
         return redirect('mybookings')
 
 
